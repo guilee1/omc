@@ -1,0 +1,147 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.ltln.modules.ni.omc.core.vo;
+
+import java.text.SimpleDateFormat;
+
+import org.apache.commons.lang3.StringUtils;
+
+public class PerformanceVo extends BaseVO {
+
+	private static final long serialVersionUID = -8426756634961011990L;
+
+	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+
+	private String rmUid;
+	private String monitorCycle;
+	private String monitorType;
+	private String monitorTime;
+	private boolean workLsp;
+
+	public boolean isWorkLsp() {
+		return workLsp;
+	}
+
+	public void setWorkLsp(boolean workLsp) {
+		this.workLsp = workLsp;
+	}
+
+	private String[] perfKey;
+	private String[] perfValue;
+
+
+	public String getMonitorCycle() {
+		return monitorCycle;
+	}
+
+	public void setMonitorCycle(String monitorCycle) {
+		this.monitorCycle = monitorCycle;
+	}
+
+	public String getMonitorType() {
+		return monitorType;
+	}
+
+	public void setMonitorType(String monitorType) {
+		this.monitorType = monitorType;
+	}
+
+	public String getRmUid() {
+		return rmUid;
+	}
+
+	public void setRmUid(String rmUid) {
+		this.rmUid = rmUid;
+	}
+
+	public String getMonitorTime() {
+		return monitorTime;
+	}
+
+	public void setMonitorTime(String monitorTime) {
+		this.monitorTime = monitorTime;
+	}
+
+	public String[] getPerfKey() {
+		return perfKey;
+	}
+
+	public void setPerfKey(String[] perfKey) {
+		this.perfKey = perfKey;
+	}
+
+	public String[] getPerfValue() {
+		return perfValue;
+	}
+
+	public void setPerfValue(String[] perfValue) {
+		this.perfValue = perfValue;
+	}
+
+	public String getHeader() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("TimeStamp=")
+				.append(dateFormat.format(System.currentTimeMillis()))
+				.append("|TimeZone=UTC+8").append("|Period=")
+				.append(this.monitorCycle).append("|VendorName=PT")
+				.append("|ElementType=PTN").append("|PmVersion=V1.2.0")
+				.append("|ObjectType=" + this.getResType());
+		sb.append("\r\n");
+		return sb.toString();
+	}
+
+	public static final String NA = "N/A";
+
+	public String getColumn() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("startTime|");
+		for (String fieldName : perfKey) {
+			sb.append(fieldName).append("|");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append("\r\n");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.getData();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(! (obj instanceof PerformanceVo))
+			return false;
+		PerformanceVo other = (PerformanceVo)obj;
+		if(StringUtils.equals(this.rmUid, other.getRmUid()))
+			return true;
+		return false;
+	}
+
+	public String getData() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.monitorTime).append("|");
+		for (String value : perfValue) {
+			if (NA.equals(value)) {
+				sb.append("--|");
+			} else {
+				sb.append(value).append("|");
+			}
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		return sb.toString();
+	}
+
+	@Override
+	public String getResType() {
+		return monitorType;
+	}
+
+	@Override
+	public String getFileRmUID() {
+		return this.monitorCycle;
+	}
+}

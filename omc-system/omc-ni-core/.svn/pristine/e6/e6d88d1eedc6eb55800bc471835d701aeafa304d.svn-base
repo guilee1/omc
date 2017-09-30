@@ -1,0 +1,18 @@
+package com.ltln.modules.ni.omc.core;
+
+import java.util.List;
+
+import com.ltln.modules.ni.omc.core.annotation.Facade;
+import com.ltln.modules.ni.omc.core.vo.PerformanceVo;
+
+@Facade(serviceName="IPerfInf",serviceBean="perfInfImpl")
+public interface IPerfInf {
+
+	/**
+	 * query history performance data between beginTime and endTime
+	 * @param beginTime default value is the zero time of today 00:00:00
+	 * @param endTime default value is now
+	 * @return
+	 */
+	List<PerformanceVo> queryHistoryPerf(String beginTime,String endTime);
+}

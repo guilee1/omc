@@ -1,0 +1,50 @@
+<service-configuration>
+  <service>
+    <name>Start WebServer</name>
+    <class-name>com.ltln.netmgt.server.util.StartWebContainer</class-name>
+  </service>
+  <service>
+    <name>Authorization Management</name>
+    <class-name>com.ltln.netmgt.server.security.authorization.NmsAuthManager</class-name>
+  </service>
+  <service>
+    <name>Topo Management</name>
+    <class-name>com.ltln.netmgt.server.topodb.DBServer</class-name>
+  </service>
+  <service>
+    <name>Device Management</name>
+    <class-name>com.ltln.netmgt.server.ms.NMSMServer</class-name>
+  </service>
+  <service>
+    <name>Map Server</name>
+    <class-name>com.ltln.netmgt.server.mapdb.MapServerBE</class-name>
+  </service>
+  <service>
+    <name>Collector Management</name>
+    <class-name>com.ltln.netmgt.server.poll.Collector</class-name>
+  </service>
+  <service>
+    <name>Event Service</name>
+    <class-name>com.ltln.netmgt.server.eventdb.EventService</class-name>
+  </service>
+  <service>
+    <name>Configuration Server</name>
+    <class-name>com.ltln.netmgt.server.config.NmsConfigurationServer</class-name>
+  </service>
+  <service>
+    <name>Scheduler Management</name>
+    <class-name>com.ltln.netmgt.server.scheduler.NmsPolicyMgr</class-name>
+  </service>
+  <service>
+    <name>System Monitor</name>
+    <class-name>com.ltln.netmgt.server.startnms.AdminModule</class-name>
+  </service> 
+  <service>
+    <name>Msan Management Module</name>
+    <class-name>com.ltln.modules.msan.server.util.cscommunication.MsanMainServer</class-name>
+  </service>
+  <service>
+    <name>Mtosi Northbound Interface Module</name>
+    <class-name>com.ltln.modules.ni.mtosi.start.MTMain</class-name>
+  </service>
+</service-configuration>

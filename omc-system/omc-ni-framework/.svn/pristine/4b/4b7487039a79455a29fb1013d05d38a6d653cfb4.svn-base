@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:jaxws="http://cxf.apache.org/jaxws" 
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:task="http://www.springframework.org/schema/task"
+		xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+		">
+
+    <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
+		<property name="config" value="classpath:activemq.xml" />
+		<property name="start" value="true" />
+	</bean>
+
+	<bean id="jmsConnectionFactory"
+		class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="nio://localhost:61616?jms.useAsyncSend=true"></property>
+		 <property name="trustAllPackages" value="true"/>
+	</bean>
+	
+	<bean id="cachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory"
+			ref="jmsConnectionFactory" />
+		<property name="sessionCacheSize" value="10" />
+	</bean>
+
+	<bean id="alarm"
+		class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="Fault" />
+	</bean>
+
+
+	<bean id="JmsMessageConverter" class="com.ltln.modules.ni.omc.framework.msg.convertor.JmsMessageConverter"/>
+
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="cachingConnectionFactory" />
+		<property name="messageConverter" ref="JmsMessageConverter"/>
+	</bean>
+
+	<bean id="JmsSender" class="com.ltln.modules.ni.omc.framework.msg.JmsSender">
+		<property name="template" ref="jmsTemplate" />
+		<property name="alarm" ref="alarm" />
+	</bean>
+	<context:annotation-config />  
+    <context:component-scan base-package="com.ltln.modules.ni.omc.framework" />  
+	<import resource="classpath*:*-service.xml" />
+</beans>

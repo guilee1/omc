@@ -1,0 +1,57 @@
+package com.ltln.modules.ni.omc.framework.locator;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+
+import com.ltln.modules.ni.omc.framework.aware.SelfBeanFactoryAware;
+import com.ltln.modules.ni.omc.framework.log.Logger;
+import com.ltln.modules.ni.omc.framework.scanner.PathMatchingResourcePatternResolver;
+
+@Component
+public final class ServiceLocator implements ILocator {
+
+    Map<String, Object> infMap = new SoftHashMap<>();
+    
+    final List<String> moduleNameList = new ArrayList<>();
+    
+    public ServiceLocator() {
+    	try {
+			moduleNameList.addAll( new PathMatchingResourcePatternResolver().getModuleNames() );
+		} catch (IOException e) {
+			Logger.error("load modulesName error:", e);
+		}
+	}
+
+    @Override
+    public <T> List<T> getInstances(Class<T> infClazz) {
+        List<T> list = new ArrayList<>();
+        for (String m : moduleNameList) {
+            T instance = this.getInstance(infClazz, m);
+            if (instance != null) 
+                list.add(instance);
+        }
+        return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getInstance(Class<T> infClazz, String moduleName) {
+        String key = StringUtils.lowerCase(moduleName + "_" + infClazz.getSimpleName());
+        Object instance = infMap.get(key);
+        if (null != instance)
+            return (T) instance;
+        Object bean = SelfBeanFactoryAware.getBean(key);
+        if (bean == null) {
+            Logger.info(String.format("can not load bean from ioc container %s", key));
+            return null;
+        }
+        infMap.put(key, bean);
+        return (T) bean;
+    }
+    
+}

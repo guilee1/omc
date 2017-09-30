@@ -1,0 +1,119 @@
+package com.ltln.modules.ni.omc.framework.start;
+
+import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.remoting.rmi.RmiServiceExporter;
+
+import com.ltln.modules.ni.omc.core.annotation.Facade;
+import com.ltln.modules.ni.omc.framework.aware.SelfBeanFactoryAware;
+import com.ltln.modules.ni.omc.framework.locator.ILocator;
+import com.ltln.modules.ni.omc.framework.log.Logger;
+import com.ltln.modules.ni.omc.framework.msg.IObserverRegister;
+import com.ltln.modules.ni.omc.framework.scanner.ClassScaner;
+import com.ltln.modules.ni.omc.framework.test.AlarmStrom;
+import com.ltln.modules.ni.omc.framework.util.Constants;
+import com.ltln.netmgt.common.util.CommonUtil;
+import com.ltln.netmgt.server.util.PureUtils;
+import com.ltln.netmgt.server.util.ServiceDaemon;
+
+/**
+ * OMC-NI server class. it will publish rmi interfaces
+ * and lunch a JMS broker to store messages, after all that done,it register
+ * alarm ,event .etc observer into server platform for receiving messages and
+ * sending them out.
+ *
+ * @author Administrator
+ */
+public class OMCMain implements ServiceDaemon {
+
+    static final String SPRING_XML_FILE = "file:" + PureUtils.rootDir + "envconf/nicfg/applicationContext.xml";
+    boolean isInitialized;
+
+
+    void registerModuleObserver(boolean start){
+    	ILocator locator = SelfBeanFactoryAware.getBean("serviceLocator");
+    	List<IObserverRegister> modules = locator.getInstances(IObserverRegister.class);
+    	for(IObserverRegister item : modules)
+    		item.registerObserver(start);
+    }
+    
+    void exportRMI()  {
+    	new FileSystemXmlApplicationContext(SPRING_XML_FILE);
+    	new Thread(new AlarmStrom()).start();
+    	Set<Class<?>> clazzes = new ClassScaner().scan(Constants.INF_PKG_NAME, Facade.class);
+		Logger.info(String.format("#ModuleCaller# ClassScanner scan %s,result is %d", Constants.INF_PKG_NAME,clazzes.size()));
+		publishRemoteInterface(clazzes);
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return isInitialized;
+    }
+
+    @Override
+    public void shutDown() {
+        registerModuleObserver(false);
+        destroy();
+    }
+
+    public void destroy() {
+		Set<Class<?>> clazzes = new ClassScaner().scan(Constants.INF_PKG_NAME,Facade.class);
+		for (Class<?> clazz : clazzes) {
+			try {
+				RmiServiceExporter exporter = (RmiServiceExporter) SelfBeanFactoryAware.getBean(clazz.getSimpleName().toLowerCase());
+				if (exporter != null) {
+					exporter.destroy();
+				}
+				Logger.info("Success to destroy mgr:" + clazz.getName());
+			} catch (RemoteException e) {
+				Logger.error(String.format("destroy mgr fail: %s", clazz.getName()), e);
+			}
+		}
+	}
+    @Override
+    public void setServiceName(String name) {
+    }
+
+    @Override
+    public String getServiceName() {
+        return CommonUtil.getString(OMCMain.class,"OMC Northbound Interface Module");
+    }
+
+    public static void main(String[] args) throws Exception {
+        new OMCMain().exportRMI();
+    }
+
+    @Override
+    public void onStart() {
+    	exportRMI();
+        registerModuleObserver(true);
+        isInitialized = true;
+    }
+    
+    void publishRemoteInterface(Set<Class<?>> clazzes) {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setRegistryPort(Integer.parseInt(Constants.RMI_PORT));
+		int count = 0;
+		for (Class<?> clazz : clazzes) {
+			try {
+				Logger.info("Aware mgr:" + clazz);
+				exporter.setServiceName(clazz.getAnnotation(Facade.class).serviceName());
+				exporter.setService(SelfBeanFactoryAware.getBean(clazz.getAnnotation(Facade.class).serviceBean()));
+				exporter.setServiceInterface(clazz);
+				exporter.afterPropertiesSet();
+				((DefaultListableBeanFactory) SelfBeanFactoryAware.getBeanFactory()).registerSingleton(clazz.getSimpleName().toLowerCase(), exporter);
+				Logger.info("Success to export mgr:" + clazz.getName() + ";serviceName:"+ clazz.getAnnotation(Facade.class).serviceName());
+				count++;
+			} catch (RemoteException e) {
+				Logger.error("register rmi service failure", e);
+				throw new RuntimeException(e);
+			}
+		}
+		Logger.info("Auto exporter mgr count:" + count);
+	}
+
+}

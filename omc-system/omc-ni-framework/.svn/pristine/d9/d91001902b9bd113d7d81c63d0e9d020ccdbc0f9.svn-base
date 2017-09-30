@@ -1,0 +1,20 @@
+package com.ltln.modules.ni.omc.framework.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.ltln.modules.ni.omc.core.IAlmInf;
+import com.ltln.modules.ni.omc.core.vo.AlarmVo;
+
+@Component("almInfImpl")
+public class AlmInfImpl implements IAlmInf {
+
+	@Override
+	public List<AlarmVo> queryCurrentActiveAlarm(String beginTime,
+			String endTime) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

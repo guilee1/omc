@@ -1,0 +1,28 @@
+package com.ltln.modules.ni.omc.framework.impl;
+
+import java.util.Date;
+
+import org.springframework.stereotype.Component;
+
+import com.ltln.modules.ni.omc.core.IMgrInf;
+
+@Component("mgrInfImpl")
+public class MgrInfImpl implements IMgrInf {
+
+	@Override
+	public void heartBeat() {
+		//do nothing here~
+	}
+
+	@Override
+	public boolean authentication(String userName, String pwd) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public long getNtpTime() {
+		return new Date().getTime();
+	}
+
+}

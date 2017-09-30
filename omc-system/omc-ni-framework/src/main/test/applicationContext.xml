@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:jaxws="http://cxf.apache.org/jaxws" 
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:task="http://www.springframework.org/schema/task"
+		xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+		">
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+ 	
+ 	<bean id="jmsConnectionFactory" class="com.ltln.modules.msan.ni.mtosi.aware.ActiveMQSSLConnectionFactory">
+		  <property name="brokerURL" value="ssl://localhost:61617" />
+		  <property name="keyStore" value="file:E:\msan\module-msan\build\trunk\msan-ni-mtosi\msan-ni-mtosi-impl\envconf\nicfg\cer\myclient.ks"/>
+		  <property name="keyStorePassword" value="password"/>
+		  <property name="trustStore" value="file:E:\msan\module-msan\build\trunk\msan-ni-mtosi\msan-ni-mtosi-impl\envconf\nicfg\cer\myclient.ts"/>
+		  <property name="trustStorePassword" value="password"/>
+	</bean>
+	<bean id="cachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory"
+			ref="jmsConnectionFactory" />
+		<property name="sessionCacheSize" value="10" />
+	</bean>
+
+	<bean id="heartbeat"
+		class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="FileTransfer" />
+	</bean>
+	<bean id="event"
+		class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="Performance" />
+	</bean>
+	<bean id="alarm"
+		class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="Fault" />
+	</bean>
+	<bean id="state"
+		class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="Inventory" />
+	</bean>
+	<bean id="protection"
+		class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="Protection" />
+	</bean>
+
+
+	<bean id="JmsMessageConverter" class="com.ltln.modules.msan.ni.mtosi.msg.convertor.JmsMessageConverter"/>
+
+	
+    <bean id="JmsReceiver"
+		class="com.ltln.modules.msan.ni.mtosi.client.JmsAyncReceiver" />
+
+	<bean id="topicListener"
+		class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+		<constructor-arg ref="JmsReceiver" />
+		<property name="defaultListenerMethod" value="receive" />
+		<property name="messageConverter" ref="JmsMessageConverter" />
+	</bean>
+	<bean id="heartbeatListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="cachingConnectionFactory" />
+		<property name="destination" ref="heartbeat" />
+		<property name="messageListener" ref="topicListener" />
+	</bean>
+	
+	
+	
+	<jaxws:client  id="client" serviceClass="com.ltln.modules.msan.ni.mtosi.modules.inf.IHelloWorld" address="https://localhost:8001/helloworld"/>
+      <jaxws:client  id="maintenanceControl" serviceClass="org.tmforum.mtop.rtm.wsdl.mc.v1_0.MaintenanceControl" address="https://localhost:8001/maintenanceControl"/>
+</beans>

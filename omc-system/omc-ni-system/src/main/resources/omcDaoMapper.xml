@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ltln.modules.ni.omc.system.core.dao.IOmcDao">
+
+	<select id="getMaxSeqNo" resultType="java.lang.Integer">
+		select alarmSeq from alarmserial order by id desc LIMIT 1
+	 </select>
+ 
+ 	<select id="getUserCount" resultType="java.lang.Integer">
+		select count(1) from omcuser where username=#{0} and pwd=#{1}
+	 </select>
+	 
+	 <delete id="delAllUsers">
+	 	delete from omcuser
+	 </delete>
+	 
+	 <insert id="insertOmcUser" parameterType="com.ltln.modules.ni.omc.system.core.dao.OmcUser" flushCache="true">
+		 INSERT INTO omcuser (userName,pwd) values
+		 <foreach collection="list" item="item" separator=",">
+		  (#{item.userName},#{item.pwd})
+		 </foreach>
+	</insert>
+	 
+	<select id="getAllUser" resultType="com.ltln.modules.ni.omc.system.core.dao.OmcUser">
+		SELECT * FROM omcuser
+	</select>
+	
+	<insert id="insertAlarmVo" parameterType="com.ltln.modules.ni.omc.core.vo.AlarmVo"
+		flushCache="true">
+		insert into alarmserial (alarmId,
+		alarmSeq,
+		alarmTitle,
+		alarmStatus,
+		alarmType,
+		origSeverity,
+		eventTime,
+		eventTimeMills,
+		specificProblemID,
+		specificProblem,
+		neUID,
+		neName,
+		neType,
+		objectUID,
+		objectName,
+		objectType,
+		locationInfo,
+		holderType,
+		alarmCheck,
+		layer,
+		addInfo)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.alarmId},
+			#{item.alarmSeq},
+			#{item.alarmTitle},
+			#{item.alarmStatus},
+			#{item.alarmType},
+			#{item.origSeverity},
+			#{item.eventTime},
+			#{item.eventTimeMills},
+			#{item.specificProblemID},
+			#{item.specificProblem},
+			#{item.neUID},
+			#{item.neName},
+			#{item.neType},
+			#{item.objectUID},
+			#{item.objectName},
+			#{item.objectType},
+			#{item.locationInfo},
+			#{item.holderType},
+			#{item.alarmCheck},
+			#{item.layer},
+			#{item.addInfo})
+		</foreach>
+	</insert>
+
+	<insert id="insertAlarmLog" parameterType="java.util.List"
+		flushCache="true">
+		INSERT INTO alarmlog (nmsIp,userName,pushTime,alarmSequenceId,addInfo)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.nmsIp},#{item.userName},#{item.pushTime},#{item.alarmSequenceId},#{item.addInfo})
+		</foreach>
+	</insert>
+
+	<insert id="insertSysLog" parameterType="com.ltln.modules.ni.omc.system.core.dao.SysOperLog" flushCache="true">
+		 INSERT INTO sysoperlog (nmsIp,userName,connectTime,disConnectTime,addInfo) values (#{nmsIp},#{userName},#{connectTime},#{disConnectTime},#{addInfo})
+	</insert>
+	
+	<insert id="truncateTable" parameterType="String" flushCache="true" statementType="STATEMENT">
+		truncate table ${_parameter}
+	</insert>
+	
+	<select id="queryAlarmCountBySeq" resultType="int">
+		SELECT count(1) FROM alarmserial where alarmSeq >= #{0}
+	</select>
+	<select id="queryAlarmCountByTime" resultType="int">
+		SELECT count(1) FROM alarmserial
+		<![CDATA[ where eventTimeMills >= #{0} ]]>
+		<![CDATA[ AND eventTimeMills <= #{1} ]]> 
+	</select>
+	
+	<select id="queryAlarmBySeq" resultType="com.ltln.modules.ni.omc.core.vo.AlarmVo">
+		SELECT * FROM alarmserial where alarmSeq >= #{0} LIMIT #{1},#{2}
+	</select>
+	<select id="queryAlarmByTime" resultType="com.ltln.modules.ni.omc.core.vo.AlarmVo">
+		SELECT * FROM alarmserial
+		<![CDATA[ where eventTimeMills >= #{0} ]]>
+		<![CDATA[ AND eventTimeMills <= #{1} ]]> 
+		LIMIT #{2},#{3}
+	</select>
+
+	<select id="heartBeat" resultType="java.lang.Integer">
+		select 1 from dual
+	</select>
+
+	<select id="getTotalSize" resultType="int" parameterType="String" flushCache="true" statementType="STATEMENT">
+		SELECT count(1) FROM ${_parameter}
+	</select>
+	
+	<select id="querySysOperLog" resultType="com.ltln.modules.ni.omc.system.core.dao.SysOperLog">
+		SELECT * FROM SysOperLog LIMIT #{0},#{1}
+	</select>
+	
+	<select id="queryAlmLog" resultType="com.ltln.modules.ni.omc.core.vo.AlarmVo">
+		SELECT * FROM alarmserial LIMIT #{0},#{1}
+	</select>
+	
+	<select id="querySenderLog" resultType="com.ltln.modules.ni.omc.system.core.alarm.log.AlarmLog">
+		SELECT * FROM alarmlog LIMIT #{0},#{1}
+	</select>
+</mapper>

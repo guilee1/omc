@@ -1,0 +1,60 @@
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for alarmlog
+-- ----------------------------
+DROP TABLE IF EXISTS `alarmlog`;
+CREATE TABLE `alarmlog` (
+  `logId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `nmsIp` varchar(30) DEFAULT NULL,
+  `userName` varchar(20) DEFAULT NULL,
+  `pushTime` datetime DEFAULT NULL,
+  `alarmSequenceId` int(11) DEFAULT NULL,
+  `addInfo` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`logId`)
+) ENGINE=InnoDB AUTO_INCREMENT=392 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for sysoperlog
+-- ----------------------------
+DROP TABLE IF EXISTS `sysoperlog`;
+CREATE TABLE `sysoperlog` (
+  `logId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `nmsIp` varchar(25) DEFAULT NULL,
+  `userName` varchar(20) DEFAULT NULL,
+  `connectTime` datetime DEFAULT NULL,
+  `disConnectTime` datetime DEFAULT NULL,
+  `addInfo` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`logId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for alarmserial
+-- ----------------------------
+DROP TABLE IF EXISTS `alarmserial`;
+CREATE TABLE `alarmserial` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `alarmId` varchar(20) NOT NULL,
+  `alarmSeq` int(11) NOT NULL,
+  `alarmTitle` varchar(255) NOT NULL,
+  `alarmStatus` tinyint(4) NOT NULL,
+  `alarmType` varchar(50) NOT NULL,
+  `origSeverity` tinyint(4) NOT NULL,
+  `logTime` varchar(19) NOT NULL,
+  `eventTime` varchar(19) NOT NULL,
+  `eventTimeMills` bigint(20) DEFAULT NULL,
+  `specificProblemID` varchar(100) NOT NULL,
+  `specificProblem` varchar(255) NOT NULL,
+  `neUID` varchar(28) NOT NULL,
+  `neName` varchar(255) NOT NULL,
+  `neType` varchar(20) NOT NULL,
+  `objectUID` varchar(28) NOT NULL,
+  `objectName` varchar(255) NOT NULL,
+  `objectType` varchar(20) NOT NULL,
+  `locationInfo` varchar(255) NOT NULL,
+  `holderType` varchar(20) DEFAULT NULL,
+  `alarmCheck` varchar(128) DEFAULT NULL,
+  `layer` int(11) DEFAULT NULL,
+  `addInfo` varchar(2048) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=53001 DEFAULT CHARSET=utf8;

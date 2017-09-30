@@ -1,0 +1,87 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.ltln.modules.ni.omc.core.vo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class PerformanceVo {
+
+    private String agentID;
+    private String ifIndex;
+    private String rmUid;
+    private String dn;
+    private String userLabel;
+    private String monitorCycle;
+    private String monitorType;
+    private List<PerfDataVo> perfDatas = new ArrayList<>();
+
+	public List<PerfDataVo> getPerfDatas() {
+		return perfDatas;
+	}
+
+	public void setPerfDatas(List<PerfDataVo> perfDatas) {
+		this.perfDatas = perfDatas;
+	}
+
+	public String getAgentID() {
+        return agentID;
+    }
+
+    public void setAgentID(String agentID) {
+        this.agentID = agentID;
+    }
+
+    public String getIfIndex() {
+        return ifIndex;
+    }
+
+    public void setIfIndex(String ifIndex) {
+        this.ifIndex = ifIndex;
+    }
+
+    public String getMonitorCycle() {
+        return monitorCycle;
+    }
+
+    public void setMonitorCycle(String monitorCycle) {
+        this.monitorCycle = monitorCycle;
+    }
+
+    public String getMonitorType() {
+        return monitorType;
+    }
+
+    public void setMonitorType(String monitorType) {
+        this.monitorType = monitorType;
+    }
+
+	public String getRmUid() {
+		return rmUid;
+	}
+
+	public void setRmUid(String rmUid) {
+		this.rmUid = rmUid;
+	}
+
+	public String getDn() {
+		return dn;
+	}
+
+	public void setDn(String dn) {
+		this.dn = dn;
+	}
+
+	public String getUserLabel() {
+		return userLabel;
+	}
+
+	public void setUserLabel(String userLabel) {
+		this.userLabel = userLabel;
+	}
+
+}

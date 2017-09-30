@@ -1,0 +1,293 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.ltln.modules.ni.omc.core.vo;
+
+import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.ltln.modules.ni.omc.core.util.ReflectionUtil;
+
+
+public class PerformanceVo extends BaseVO{
+
+	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+	 
+	static Set<String> Ignore;
+	static final String[] IgnoreFields = new String[]{"agentID","ifIndex","rmUid",
+		"dn","userLabel","monitorCycle","monitorType","monitorTime"};
+		static{
+			Ignore = new HashSet<>();
+			for(String i : IgnoreFields)
+				Ignore.add(i);
+		}
+    private String agentID;
+    private String ifIndex;
+    private String rmUid;
+    private String dn;
+    private String userLabel;
+    private String monitorCycle;
+    private String monitorType;
+    
+    private String monitorTime;
+    private String ceses;
+    private String cesses;
+    private String cesbbe;
+    private String cesuas;
+    private String cescv;
+    private String inpacket;
+    private String outpacket;
+    private String inbyte;
+    private String outbyte;
+    private String droppercent;
+    private String delay;
+    private String delaychg;
+    private String sfptxp;
+    private String sfprxp;
+    private String fcserr;
+    
+	public String getAgentID() {
+        return agentID;
+    }
+
+    public void setAgentID(String agentID) {
+        this.agentID = agentID;
+    }
+
+    public String getIfIndex() {
+        return ifIndex;
+    }
+
+    public void setIfIndex(String ifIndex) {
+        this.ifIndex = ifIndex;
+    }
+
+    public String getMonitorCycle() {
+        return monitorCycle;
+    }
+
+    public void setMonitorCycle(String monitorCycle) {
+        this.monitorCycle = monitorCycle;
+    }
+
+    public String getMonitorType() {
+        return monitorType;
+    }
+
+    public void setMonitorType(String monitorType) {
+        this.monitorType = monitorType;
+    }
+
+	public String getRmUid() {
+		return rmUid;
+	}
+
+	public void setRmUid(String rmUid) {
+		this.rmUid = rmUid;
+	}
+
+	public String getDn() {
+		return dn;
+	}
+
+	public void setDn(String dn) {
+		this.dn = dn;
+	}
+
+	public String getUserLabel() {
+		return userLabel;
+	}
+
+	public void setUserLabel(String userLabel) {
+		this.userLabel = userLabel;
+	}
+
+	public String getMonitorTime() {
+		return monitorTime;
+	}
+
+	public void setMonitorTime(String monitorTime) {
+		this.monitorTime = monitorTime;
+	}
+
+	public String getCeses() {
+		return ceses;
+	}
+
+	public void setCeses(String ceses) {
+		this.ceses = ceses;
+	}
+
+	public String getCesses() {
+		return cesses;
+	}
+
+	public void setCesses(String cesses) {
+		this.cesses = cesses;
+	}
+
+	public String getCesbbe() {
+		return cesbbe;
+	}
+
+	public void setCesbbe(String cesbbe) {
+		this.cesbbe = cesbbe;
+	}
+
+	public String getCesuas() {
+		return cesuas;
+	}
+
+	public void setCesuas(String cesuas) {
+		this.cesuas = cesuas;
+	}
+
+	public String getCescv() {
+		return cescv;
+	}
+
+	public void setCescv(String cescv) {
+		this.cescv = cescv;
+	}
+
+	public String getInpacket() {
+		return inpacket;
+	}
+
+	public void setInpacket(String inpacket) {
+		this.inpacket = inpacket;
+	}
+
+	public String getOutpacket() {
+		return outpacket;
+	}
+
+	public void setOutpacket(String outpacket) {
+		this.outpacket = outpacket;
+	}
+
+	public String getInbyte() {
+		return inbyte;
+	}
+
+	public void setInbyte(String inbyte) {
+		this.inbyte = inbyte;
+	}
+
+	public String getOutbyte() {
+		return outbyte;
+	}
+
+	public void setOutbyte(String outbyte) {
+		this.outbyte = outbyte;
+	}
+
+	public String getDroppercent() {
+		return droppercent;
+	}
+
+	public void setDroppercent(String droppercent) {
+		this.droppercent = droppercent;
+	}
+
+	public String getDelay() {
+		return delay;
+	}
+
+	public void setDelay(String delay) {
+		this.delay = delay;
+	}
+
+	public String getDelaychg() {
+		return delaychg;
+	}
+
+	public void setDelaychg(String delaychg) {
+		this.delaychg = delaychg;
+	}
+
+	public String getSfptxp() {
+		return sfptxp;
+	}
+
+	public void setSfptxp(String sfptxp) {
+		this.sfptxp = sfptxp;
+	}
+
+	public String getSfprxp() {
+		return sfprxp;
+	}
+
+	public void setSfprxp(String sfprxp) {
+		this.sfprxp = sfprxp;
+	}
+
+	public String getFcserr() {
+		return fcserr;
+	}
+
+	public void setFcserr(String fcserr) {
+		this.fcserr = fcserr;
+	}
+
+	public String getHeader(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("TimeStamp=").append(dateFormat.format(System.currentTimeMillis()))
+		.append("|TimeZone=UTC+8").append("|Period=").append(this.monitorCycle)
+		.append("|VendorName=SSDX").append("|ElementType=PTN").append("|PmVersion=V1.2.0");
+		sb.append("\r\n");
+		return sb.toString();
+	}
+	
+	public static final String NA = "N/A";
+	public String getColumn(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("rmUID|").append("Dn|").append("UserLabel|").append("startTime|");
+		List<String> fieldNameList = ReflectionUtil.getFieldNameList(PerformanceVo.class);
+		for(String fieldName : fieldNameList){
+			if(Ignore.contains(fieldName))continue;
+			sb.append(fieldName).append("|");
+		}
+		sb.deleteCharAt(sb.length()-1);
+		sb.append("\r\n");
+		return sb.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return this.getData();
+	}
+	
+	public String getData(){
+		StringBuilder sb = new StringBuilder();
+		List<String> fieldNameList = ReflectionUtil.getFieldNameList(PerformanceVo.class);
+		sb.append(this.rmUid).append("|").append(this.dn).append("|")
+		.append(this.userLabel).append("|").append(this.monitorTime).append("|");
+		for(String fieldName : fieldNameList){
+			if(Ignore.contains(fieldName))continue;
+			String value = ReflectionUtil.getFieldVal(this, fieldName);
+			if(NA.equals(value)){
+				sb.append("|");
+			}else{
+				sb.append(value).append("|");
+			}
+		}
+		sb.deleteCharAt(sb.length()-1);
+//		sb.append("\r\n");
+		return sb.toString();
+	}
+
+	@Override
+	public String getResType() {
+		return monitorType;
+	}
+
+	@Override
+	public String getFileRmUID() {
+		return this.monitorCycle;
+	}
+}

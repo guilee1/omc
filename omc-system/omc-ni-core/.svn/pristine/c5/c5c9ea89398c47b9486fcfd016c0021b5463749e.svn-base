@@ -1,0 +1,191 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.ltln.modules.ni.omc.core.vo;
+
+
+public class PerformanceVo {
+
+    private String agentID;
+    private String ifIndex;
+    private String monitorCycle;
+    private String monitorType;
+    private String monitorTime;
+    private String ceses;
+    private String cesses;
+    private String cesbbe;
+    private String cesuas;
+    private String cescv;
+    private String inpacket;
+    private String outpacket;
+    private String inbyte;
+    private String outbyte;
+    private String droppercent;
+    private String delay;
+    private String delaychg;
+    private String sfptxp;
+    private String sfprxp;
+    private String fcserr;
+
+    public String getAgentID() {
+        return agentID;
+    }
+
+    public void setAgentID(String agentID) {
+        this.agentID = agentID;
+    }
+
+    public String getIfIndex() {
+        return ifIndex;
+    }
+
+    public void setIfIndex(String ifIndex) {
+        this.ifIndex = ifIndex;
+    }
+
+    public String getMonitorCycle() {
+        return monitorCycle;
+    }
+
+    public void setMonitorCycle(String monitorCycle) {
+        this.monitorCycle = monitorCycle;
+    }
+
+    public String getMonitorType() {
+        return monitorType;
+    }
+
+    public void setMonitorType(String monitorType) {
+        this.monitorType = monitorType;
+    }
+
+    public String getMonitorTime() {
+        return monitorTime;
+    }
+
+    public void setMonitorTime(String monitorTime) {
+        this.monitorTime = monitorTime;
+    }
+
+    public String getCeses() {
+        return ceses;
+    }
+
+    public void setCeses(String ceses) {
+        this.ceses = ceses;
+    }
+
+    public String getCesses() {
+        return cesses;
+    }
+
+    public void setCesses(String cesses) {
+        this.cesses = cesses;
+    }
+
+    public String getCesbbe() {
+        return cesbbe;
+    }
+
+    public void setCesbbe(String cesbbe) {
+        this.cesbbe = cesbbe;
+    }
+
+    public String getCesuas() {
+        return cesuas;
+    }
+
+    public void setCesuas(String cesuas) {
+        this.cesuas = cesuas;
+    }
+
+    public String getCescv() {
+        return cescv;
+    }
+
+    public void setCescv(String cescv) {
+        this.cescv = cescv;
+    }
+
+    public String getInpacket() {
+        return inpacket;
+    }
+
+    public void setInpacket(String inpacket) {
+        this.inpacket = inpacket;
+    }
+
+    public String getOutpacket() {
+        return outpacket;
+    }
+
+    public void setOutpacket(String outpacket) {
+        this.outpacket = outpacket;
+    }
+
+    public String getInbyte() {
+        return inbyte;
+    }
+
+    public void setInbyte(String inbyte) {
+        this.inbyte = inbyte;
+    }
+
+    public String getOutbyte() {
+        return outbyte;
+    }
+
+    public void setOutbyte(String outbyte) {
+        this.outbyte = outbyte;
+    }
+
+    public String getDroppercent() {
+        return droppercent;
+    }
+
+    public void setDroppercent(String droppercent) {
+        this.droppercent = droppercent;
+    }
+
+    public String getDelay() {
+        return delay;
+    }
+
+    public void setDelay(String delay) {
+        this.delay = delay;
+    }
+
+    public String getDelaychg() {
+        return delaychg;
+    }
+
+    public void setDelaychg(String delaychg) {
+        this.delaychg = delaychg;
+    }
+
+    public String getSfptxp() {
+        return sfptxp;
+    }
+
+    public void setSfptxp(String sfptxp) {
+        this.sfptxp = sfptxp;
+    }
+
+    public String getSfprxp() {
+        return sfprxp;
+    }
+
+    public void setSfprxp(String sfprxp) {
+        this.sfprxp = sfprxp;
+    }
+
+    public String getFcserr() {
+        return fcserr;
+    }
+
+    public void setFcserr(String fcserr) {
+        this.fcserr = fcserr;
+    } 
+}

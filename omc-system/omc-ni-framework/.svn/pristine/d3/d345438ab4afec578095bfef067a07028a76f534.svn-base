@@ -1,0 +1,6 @@
+package com.ltln.modules.ni.omc.framework.locator;
+
+public enum EModule {
+
+    PTN
+}

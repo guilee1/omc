@@ -1,0 +1,3 @@
+@echo this shell script will startup msan-mtosi modules in the server.
+
+mvn -f %~dp0/pom.xml exec:exec

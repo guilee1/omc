@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:jaxws="http://cxf.apache.org/jaxws" 
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:task="http://www.springframework.org/schema/task"
+		xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+		">
+ 	
+ 	<bean id="threadPoolTaskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5" />
+		<property name="maxPoolSize" value="5" />
+		<!-- 队列最大长度，一般需要设置值>=notifyScheduledMainExecutor.maxNum；默认为Integer.MAX_VALUE -->
+		<property name="queueCapacity" value="20000" /> 
+		<property name="keepAliveSeconds" value="300" />
+		<!-- 线程池对拒绝任务（无线程可用）的处理策略，目前只支持AbortPolicy、CallerRunsPolicy；默认为后者 -->
+		<property name="rejectedExecutionHandler">
+			<!-- AbortPolicy:直接抛出java.util.concurrent.RejectedExecutionException异常 -->
+			<!-- CallerRunsPolicy:主线程直接执行该任务，执行完之后尝试添加下一个任务到线程池中，可以有效降低向线程池内添加任务的速度 -->
+			<!-- DiscardOldestPolicy:抛弃旧的任务、暂不支持；会导致被丢弃的任务无法再次被执行 -->
+			<!-- DiscardPolicy:抛弃当前任务、暂不支持；会导致被丢弃的任务无法再次被执行 -->
+			<bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+		</property>
+	</bean>
+	
+	<bean id="telnetReaderThreadPool"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="20" />
+		<property name="maxPoolSize" value="20" />
+		<property name="keepAliveSeconds" value="300" />
+		<property name="rejectedExecutionHandler">
+			<bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+		</property>
+	</bean>
+	
+ 	<bean id="jmsConnectionFactory"
+		class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="nio://localhost:61616"></property>
+		<property name="trustAllPackages" value="true"/>
+	</bean>
+	<bean id="cachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory"
+			ref="jmsConnectionFactory" />
+		<property name="sessionCacheSize" value="10" />
+	</bean>
+
+	<bean id="alarm"
+		class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="Fault" />
+	</bean>
+
+
+	<bean id="JmsMessageConverter" class="com.ltln.modules.ni.omc.system.sbi.msg.JmsMessageConverter"/>
+
+	
+    <bean id="JmsReceiver"
+		class="com.ltln.modules.ni.omc.system.sbi.msg.JmsAyncReceiver" />
+
+	<bean id="topicListener"
+		class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+		<constructor-arg ref="JmsReceiver" />
+		<property name="defaultListenerMethod" value="receive" />
+		<property name="messageConverter" ref="JmsMessageConverter" />
+	</bean>
+	<bean id="alarmListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		 <property name="autoStartup" value="false" />
+		<property name="connectionFactory" ref="cachingConnectionFactory" />
+		<property name="destination" ref="alarm" />
+		<property name="messageListener" ref="topicListener" />
+		<property name="taskExecutor" ref="telnetReaderThreadPool" />
+	</bean>
+	<context:annotation-config />  
+    <context:component-scan base-package="com.ltln.modules.ni.omc.system" />
+		
+	<bean id="ds1" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3307/nbidb" />
+        <property name="username" value="root" />
+        <property name="password" value="root" />
+    </bean>
+    
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="ds1" />
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+	</bean>
+	<bean id="omcDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.ltln.modules.ni.omc.system.core.dao.IOmcDao"></property>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	    
+</beans>

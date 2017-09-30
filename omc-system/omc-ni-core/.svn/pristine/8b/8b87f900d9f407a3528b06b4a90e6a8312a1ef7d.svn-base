@@ -1,0 +1,23 @@
+package com.ltln.modules.ni.omc.core.vo;
+
+public class PerfDataVo {
+	public String monitorTime;
+	public String ceses;
+	public String cesses;
+	public String cesbbe;
+	public String cesuas;
+	public String cescv;
+	public String inpacket;
+	public String outpacket;
+	public String inbyte;
+	public String outbyte;
+	public String droppercent;
+	public String delay;
+	public String delaychg;
+	public String sfptxp;
+	public String sfprxp;
+	public String fcserr;
+
+	public PerfDataVo() {
+	}
+}

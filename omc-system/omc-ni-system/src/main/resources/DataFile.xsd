@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="DataFile">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="FileHeader">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="TimeStamp" type="xs:dateTime"/>
+							<xs:element name="TimeZone" type="xs:string"/>
+							<xs:element name="VendorName" type="xs:string" minOccurs="0"/>
+							<xs:element name="ElementType" type="xs:string" minOccurs="0"/>
+							<xs:element name="CmVersion" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Objects">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="FieldName">
+								<xs:complexType>
+									<xs:sequence minOccurs="0" maxOccurs="unbounded">
+										<xs:element name="N">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="i" type="xs:integer" use="required"/>
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="FieldValue">
+								<xs:complexType>
+									<xs:sequence minOccurs="0" maxOccurs="unbounded">
+										<xs:element name="Object">
+											<xs:complexType>
+												<xs:sequence minOccurs="0" maxOccurs="unbounded">
+													<xs:element name="V">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute name="i" type="xs:integer" use="required"/>
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="rmUID" type="xs:string" use="required"/>
+												<xs:attribute name="Dn" type="xs:string" use="optional"/>
+												<xs:attribute name="UserLabel" type="xs:string"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
